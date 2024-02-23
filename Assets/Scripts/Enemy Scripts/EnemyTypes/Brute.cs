@@ -16,7 +16,6 @@ public class Brute : EnemyAbstract
     void Update()
     {
         EnemyUpdate();
-        Debug.Log(enemyDirection());
 
     }
 }

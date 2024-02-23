@@ -11,8 +11,7 @@ using UnityEngine.AI;
     Hunting,
     Seeking,
     Attacking,
-    Fleeing,
-    Dodging
+    Locked
 }
 public class EnemyAbstract: MonoBehaviour, IDamageable
 {
@@ -60,11 +59,14 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
         navMeshAgent = GetComponent<NavMeshAgent>();
         enemyRb = GetComponent<Rigidbody2D>();
         enemyDefaultMovementSpeed = navMeshAgent.speed;
+        
         SetSteeringOrigins();
         
     }
     public void EnemyUpdate()
     {
+        Debug.DrawRay(transform.position, transform.forward * 3f, Color.red);
+
         SetEnemyStates();
         UpdateEnemyState();
         if (isEnemyBehindPlayer())
@@ -123,8 +125,6 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
     IEnumerator EnemyFlash(SpriteRenderer spriteRenderer)
     {
       float flashDuration = 0.2f;
-      //BROKENNNN :((((
-      //Color originalColor = spriteRenderer.color;
 
         if (spriteRenderer != null && spriteRenderer.gameObject != null && spriteRenderer.gameObject.activeSelf)
         {
@@ -158,6 +158,9 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
     {
         switch (EnemyState)
         {
+            case EnemyStates.Locked:
+                LockInPlaceForCombo();
+                break;
             case EnemyStates.Attacking:
                 if (!isStartAttack) 
                 EnemyAttacking();
@@ -168,12 +171,6 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
             case EnemyStates.Seeking:
                 StartCoroutine(Seeking());
                 break;
-            case EnemyStates.Fleeing:
-                //stuff
-                break;
-            case EnemyStates.Dodging:
-                //Stuff
-                break;
             case EnemyStates.Wandering:
                 if (!isWandering)
                 {
@@ -182,6 +179,11 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
                 break;
         }
     }
+    public void LockInPlaceForCombo()
+    {
+        SetLockedSteering();
+    }
+
     private bool wasSeen;
     private bool IsHunting()
     {
@@ -205,6 +207,11 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
         originalSpeed = navMeshAgent.speed;
         originalAcc = navMeshAgent.acceleration;
         originalStoppingDistance = navMeshAgent.stoppingDistance;
+    }
+    void SetLockedSteering()
+    {
+        navMeshAgent.speed = 0f;
+        navMeshAgent.acceleration = 0f;
     }
     void ResetState()
     {
@@ -466,13 +473,13 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
     
         //Set Direction of player if they have moved.
         if (direction.y >= 0.1)
-            stringDirection = "Right";
-        else if (direction.x <= -0.1)
-            stringDirection = "Backward";
-        else if (direction.y <= -0.1)
             stringDirection = "Left";
-        else
+        else if (direction.x <= -0.1)
             stringDirection = "Forward";
+        else if (direction.y <= -0.1)
+            stringDirection = "Right";
+        else
+            stringDirection = "Backward";
 
         return stringDirection;
     }
@@ -497,10 +504,21 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
                 SetJumpingNumbers();
 
                 navMeshAgent.SetDestination(PlayerDirection);
-                
+
                 //play animation
 
-                //do damage to hits in hitbox
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position, transform.forward, out hit, 3f, playerLayer))
+                {
+
+                    PlayerController playerController = hit.collider.GetComponent<PlayerController>();
+                    if (playerController != null)
+                    {
+                        Debug.Log("Player Damaged");
+                        playerController.TakeDamage(5f); 
+                    }
+                }
+                Debug.DrawRay(transform.position, transform.forward * 3f, Color.red);
 
                 yield return new WaitForSeconds(0.4f);
                 StartCoroutine(AttackEnemyCooldown());

@@ -45,8 +45,8 @@ public class PlayerAttack : MonoBehaviour
     private float AttackAnimationCooldown = 0.2f;
 
     //Cooldown times
-    private float basicCooldown = 0.6f;
-    private float powerCooldown = 10.0f;
+    private float basicCooldown = 0.1f;
+    private float powerCooldown = 2.0f;
     private float dodgeCooldown = 2.0f;
 
     public string TypeOfAttack;
@@ -82,6 +82,15 @@ public class PlayerAttack : MonoBehaviour
             }
 
         }
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(attackTransform.position, basicAttackRange, Vector2.up, 7f, attackableLayer);
+
+        // Visualize the hits
+        foreach (RaycastHit2D hit in hits)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(attackTransform.position, hit.point);
+            Gizmos.DrawWireSphere(hit.point, 0.1f);
+        }
     }
 
     void Attacking(string attackName)
@@ -103,7 +112,7 @@ public class PlayerAttack : MonoBehaviour
     }
     void PreformAttack(float attackDamage)
     {
-        hits = Physics2D.CircleCastAll(attackTransform.position, basicAttackRange, Vector2.up, 0f, attackableLayer);
+        hits = Physics2D.CircleCastAll(attackTransform.position, basicAttackRange, Vector2.up, 3f, attackableLayer);
         for (int i = 0; i < hits.Length; i++)
         {
             if (hits[i].collider.gameObject.CompareTag("Enemy"))
@@ -138,6 +147,11 @@ public class PlayerAttack : MonoBehaviour
                 }
             }
         }
+    }
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(attackTransform.position, basicAttackRange);
     }
     void Attack(string attackName)
     {
