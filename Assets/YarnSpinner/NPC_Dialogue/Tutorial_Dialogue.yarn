@@ -1,13 +1,14 @@
 title: Intro
 tags:
 ---
-->Tutorial
 ->Skip Dialogue
+->Tutorial
     Ol Jan: Listen, the Boss is always watching...Let's finish your training... 
     Tutorial: Press *E* to Attack and Interact. 
     Tutorial: Press *Arrow Keys* or W,A,S,D to move.
     Ol Jan: Go clean all the vents and trash. There is a lot.
     Ol Jan: Trust me it will be fun. It's not tedious at all. 
+    Tutorial: Rapidly click on the vents to gain lots of points
 ===
 
 title: Ai_Intro

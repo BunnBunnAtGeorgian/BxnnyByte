@@ -46,15 +46,12 @@ public class PlayerAttack : MonoBehaviour
 
     //Cooldown times
     private float basicCooldown = 0.1f;
-    private float powerCooldown = 2.0f;
-    private float dodgeCooldown = 2.0f;
 
     public string TypeOfAttack;
     void Awake()
     {
         //keybinds
         KeyInputMappings[KeyCode.E] = "BasicAttack";
-        KeyInputMappings[KeyCode.Q] = "PowerAttack";
       //  KeyInputMappings[KeyCode.Space] = "Dodge";      
     }
 
@@ -84,13 +81,6 @@ public class PlayerAttack : MonoBehaviour
         }
         RaycastHit2D[] hits = Physics2D.CircleCastAll(attackTransform.position, basicAttackRange, Vector2.up, 7f, attackableLayer);
 
-        // Visualize the hits
-        foreach (RaycastHit2D hit in hits)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(attackTransform.position, hit.point);
-            Gizmos.DrawWireSphere(hit.point, 0.1f);
-        }
     }
 
     void Attacking(string attackName)
@@ -227,11 +217,6 @@ public class PlayerAttack : MonoBehaviour
        {
            case "BasicAttack":
                return basicCooldown;                  
-           case "PowerAttack":
-               return powerCooldown;
-       //    case "Dodge":
-       //        return dodgeCooldown;
-       //    //add more cases here if needed
            default:
                return 0f;
        }

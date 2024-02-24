@@ -11,7 +11,15 @@ public class vent : MonoBehaviour
     ParticleSystem smoke;
     void Start()
     {
+        GameObject obj = GameObject.Find("Player");
         smoke = GetComponentInChildren<ParticleSystem>();
+
+        if (obj != null)
+        {
+            // Get the component by its type
+            soundSource = obj.GetComponent<AudioSource>();
+        }
+
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -19,8 +27,11 @@ public class vent : MonoBehaviour
         if (Input.GetKey(KeyCode.E))
         {
             smoke.Stop();
-            soundSource.PlayOneShot(ventSound);
-            ScoreManager.AddToScore(2, 10f);
+            if (smoke.isPlaying)
+            {
+                soundSource.PlayOneShot(ventSound);
+                ScoreManager.AddToScore(2, 10f);
+            }
         }
     }
 
