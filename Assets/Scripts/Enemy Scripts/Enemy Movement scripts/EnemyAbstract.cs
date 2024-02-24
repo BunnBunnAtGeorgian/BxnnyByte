@@ -13,10 +13,16 @@ public enum EnemyStates
     Attacking,
     Locked
 }
+public enum EnemyAnimation
+{
+    EnemyIdle,
+    EnemyWalk
+}
 public class EnemyAbstract: MonoBehaviour, IDamageable
 {
     [Header("Enemy States")]
     public EnemyStates EnemyState;
+    public EnemyAnimation EnemyAnimation;
     [Range(5f, 300f)]
     public float enemyMaxHealth;
     [Range(2f,20f)]
@@ -42,12 +48,14 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
     private float enemyMaxAttackDmg;
     private float enemyMinAttackDmg;
 
+    Animator animator;
     GameObject player;
     SpriteRenderer spriteRenderer;
     ParticleSystem enemyPS;
     HPBar healthBar;
     NavMeshAgent navMeshAgent;
     public Rigidbody2D enemyRb;
+    private Vector3 previousPosition;
 
     public void EnemyGetComponents()
     {
@@ -58,10 +66,11 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
         healthBar = GetComponentInChildren<HPBar>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         enemyRb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         enemyDefaultMovementSpeed = navMeshAgent.speed;
         
         SetSteeringOrigins();
-        
+        previousPosition = transform.position;
     }
     public void EnemyUpdate()
     {
@@ -75,6 +84,9 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
         }
         else
             spriteRenderer.sortingOrder = player.GetComponent<SpriteRenderer>().sortingOrder - 1;
+        PlayAnimation("front");
+        previousPosition = transform.position;
+
     }
 
     bool isEnemyBehindPlayer()
@@ -84,6 +96,10 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
         else
             return true;
     }
+
+
+    bool isMoving = true;
+
     public float CalculateEnemyAttackDmg(float dmgMultiplyer)
     {
 
@@ -140,20 +156,25 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
         if (IsInAttackingRange())
         {
             EnemyState = EnemyStates.Attacking;
+            EnemyAnimation = EnemyAnimation.EnemyWalk;
         }
         else if (IsHunting())
         {
             EnemyState = EnemyStates.Hunting;
+            EnemyAnimation = EnemyAnimation.EnemyWalk;
         }
         else if (IsSeeking())
         {
             EnemyState = EnemyStates.Seeking;
+            EnemyAnimation = EnemyAnimation.EnemyWalk;
         }
         else
         {
             EnemyState = EnemyStates.Wandering;
         }
+        
     }
+    
     public void UpdateEnemyState()
     {
         switch (EnemyState)
@@ -179,6 +200,7 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
                 break;
         }
     }
+
     public void LockInPlaceForCombo()
     {
         SetLockedSteering();
@@ -262,7 +284,9 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
         isWandering = true;
         while (EnemyState == EnemyStates.Wandering)
         {
+            EnemyAnimation = EnemyAnimation.EnemyIdle;
             yield return new WaitForSeconds(5f);
+            EnemyAnimation = EnemyAnimation.EnemyWalk;
             SetRandomDestination();
 
             if (EnemyState != EnemyStates.Wandering)
@@ -456,32 +480,12 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
         navMeshAgent.acceleration = 60f;
         navMeshAgent.stoppingDistance = 0f;
     }
-    private Vector3 previousPosition;
     public string enemyDirection()
     {
-        string stringDirection;
-        // Get the current position of the object
-        Vector3 currentPosition = transform.position;
+        //enemy direction
+        string enemyDirection = "front";
+        return enemyDirection;
 
-        // Calculate the direction by subtracting the current position from the previous position
-        Vector3 direction = currentPosition - previousPosition;
-
-            direction.Normalize();
-
-
-        previousPosition = currentPosition;
-    
-        //Set Direction of player if they have moved.
-        if (direction.y >= 0.1)
-            stringDirection = "Left";
-        else if (direction.x <= -0.1)
-            stringDirection = "Forward";
-        else if (direction.y <= -0.1)
-            stringDirection = "Right";
-        else
-            stringDirection = "Backward";
-
-        return stringDirection;
     }
 
     IEnumerator AttackPlayer()
@@ -540,4 +544,20 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
         Debug.Log("Does attack???");
         player.GetComponent<PlayerController>().TakeDamage(5f);
     }
+
+
+    private int AnimationLibrary(string direction)
+    {
+        string animationName = $"{EnemyAnimation}{direction}";
+        int animationHash = Animator.StringToHash(animationName);
+       // Debug.Log(animationName);
+        return animationHash;
+    }
+  
+    void PlayAnimation(string direction)
+    {
+        animator.CrossFade(AnimationLibrary(direction), 0);
+    }
 }
+
+

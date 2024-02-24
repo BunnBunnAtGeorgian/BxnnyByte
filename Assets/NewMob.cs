@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class NewMob : EnemyAbstract
 {
@@ -22,4 +23,5 @@ public class NewMob : EnemyAbstract
         ScoreManager.AddToScore(18, 0.22f);
         Destroy(gameObject);
     }
+
 }

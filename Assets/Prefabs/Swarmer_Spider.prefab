@@ -369,6 +369,7 @@ GameObject:
   - component: {fileID: 5986796254393095424}
   - component: {fileID: 509386665000086819}
   - component: {fileID: 7868305705266813866}
+  - component: {fileID: 4402819128791932275}
   m_Layer: 7
   m_Name: Swarmer_Spider
   m_TagString: Enemy
@@ -457,6 +458,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EnemyState: 0
+  EnemyAnimation: 0
   enemyMaxHealth: 12
   enemyDefaultMovementSpeed: 3
   attackRange: 2
@@ -574,6 +576,27 @@ CircleCollider2D:
   m_Offset: {x: -0.053865433, y: 0.00999999}
   serializedVersion: 2
   m_Radius: 0.71149635
+--- !u!95 &4402819128791932275
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5803998214135954576}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d979ffdc5f1f9d54780ea399ea42edd2, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8917881567971369964
 GameObject:
   m_ObjectHideFlags: 0

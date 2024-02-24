@@ -72,10 +72,6 @@ public class PlayerAnimation : MonoBehaviour
                             currentPlayerState = PlayerState.BasicAttacking;
 
                             break;
-                        case "PowerAttack":
-                            currentPlayerState = PlayerState.PowerAttacking;
-
-                            break;
                     }
                 }
                 else if (isPlayerRunning)
