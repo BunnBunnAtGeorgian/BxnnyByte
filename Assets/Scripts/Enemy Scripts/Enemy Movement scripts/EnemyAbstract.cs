@@ -104,7 +104,7 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
         if (currentEnemyHealth <= 0)
             EnemyDie();      
     }
-    void EnemyDie()
+    public virtual void EnemyDie()
     {
         ScoreManager.AddToScore(1, 0.22f);
         Destroy(gameObject);
@@ -532,6 +532,7 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
             }
             yield return new WaitForSeconds(0.2f);
         }
+        
     }
 
      void DoAttack()

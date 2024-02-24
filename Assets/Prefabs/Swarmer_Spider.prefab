@@ -457,7 +457,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EnemyState: 0
-  enemyMaxHealth: 0
+  enemyMaxHealth: 12
   enemyDefaultMovementSpeed: 3
   attackRange: 2
   circlingSpeed: 0.5
@@ -571,9 +571,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.09, y: 0.01}
+  m_Offset: {x: -0.053865433, y: 0.00999999}
   serializedVersion: 2
-  m_Radius: 0.36
+  m_Radius: 0.71149635
 --- !u!1 &8917881567971369964
 GameObject:
   m_ObjectHideFlags: 0
