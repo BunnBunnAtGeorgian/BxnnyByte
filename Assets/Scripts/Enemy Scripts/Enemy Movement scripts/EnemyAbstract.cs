@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine; 
 using UnityEngine.AI;
+using Yarn.Unity.Editor;
 
-
- public enum EnemyStates
+public enum EnemyStates
 {
     Wandering,
     Hunting,
@@ -500,25 +500,11 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
             if (isAttacking)
             {
                 //sets steering numbers so it jumps rly fast
-
                 SetJumpingNumbers();
 
                 navMeshAgent.SetDestination(PlayerDirection);
 
-                //play animation
-
-                RaycastHit hit;
-                if (Physics.Raycast(transform.position, transform.forward, out hit, 3f, playerLayer))
-                {
-
-                    PlayerController playerController = hit.collider.GetComponent<PlayerController>();
-                    if (playerController != null)
-                    {
-                        Debug.Log("Player Damaged");
-                        playerController.TakeDamage(5f); 
-                    }
-                }
-                Debug.DrawRay(transform.position, transform.forward * 3f, Color.red);
+                StartCoroutine(CheckAttack());
 
                 yield return new WaitForSeconds(0.4f);
                 StartCoroutine(AttackEnemyCooldown());
@@ -529,9 +515,28 @@ public class EnemyAbstract: MonoBehaviour, IDamageable
         }
         
     }
-
-    void DoAttack()
+    IEnumerator CheckAttack()
     {
+        while (isAttacking)
+        {
+            Collider2D[] colliders = Physics2D.OverlapBoxAll(transform.position, transform.localScale, 0f);
 
+            // Loop through all colliders detected
+            foreach (Collider2D collider in colliders)
+                {
+                // If collision detected with another object
+                if (collider.gameObject.CompareTag("Player"))
+                {
+                    DoAttack();
+                }
+            }
+            yield return new WaitForSeconds(0.2f);
+        }
+    }
+
+     void DoAttack()
+    {
+        Debug.Log("Does attack???");
+        player.GetComponent<PlayerController>().TakeDamage(5f);
     }
 }

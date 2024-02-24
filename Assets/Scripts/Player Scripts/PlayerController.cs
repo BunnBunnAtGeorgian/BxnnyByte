@@ -91,12 +91,10 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("Taking damage");
         StartCoroutine(animator.OnHit());
-        playerStats.playerHealth = Mathf.Clamp(playerStats.playerHealth, 0f, maxHealth); // Ensure health doesn't go below 0 or above maxHealth
+        playerStats.playerHealth = Mathf.Clamp(playerStats.playerHealth, 0f, maxHealth);
         UpdateHealthBar();
         playerStats.playerHealth -= damageAmount;
-        //PROBLEM: 
 
-        // Check if the player is dead (health is 0)
         if (playerStats.playerHealth == 0f)
         {
             PlayerDead();
